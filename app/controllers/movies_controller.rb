@@ -13,13 +13,9 @@ class MoviesController < ApplicationController
   def index
     @sort = params[:sort]||session[:sort]
     @all_ratings = Movie.all_ratings#
-    session[:ratings] = session[:ratings] || {'G'=>'','PG'=>'','PG-13'=>'','R'=>''}
-    @ratings =  params[:ratings] || session[:ratings]
-
-
+    @ratings =  params[:ratings] || session[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
     @movies = Movie.where(rating:@ratings.keys).order(@sort)
-
-    if (params[:sort].nil? and !(session[:sort].nil?)) or (params[:ratings].nil? and !(session[:ratings].nil?))
+    if params[:sort]!=session[:sort] or params[:ratings]!=session[:ratings]
       session[:sort] = @sort
       session[:ratings] = @ratings
       flash.keep
