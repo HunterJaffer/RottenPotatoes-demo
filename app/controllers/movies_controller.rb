@@ -15,12 +15,13 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.all_ratings#
     session[:ratings] = session[:ratings] || {'G'=>'','PG'=>'','PG-13'=>'','R'=>''}
     @ratings =  params[:ratings] || session[:ratings]
-    session[:sort] = @sort
-    session[:ratings] = @ratings
 
-    @movies = Movie.where(rating:session[:ratings].keys).order(session[:sort])
+
+    @movies = Movie.where(rating:@ratings.keys).order(@sort)
 
     if (params[:sort].nil? and !(session[:sort].nil?)) or (params[:ratings].nil? and !(session[:ratings].nil?))
+      session[:sort] = @sort
+      session[:ratings] = @ratings
       flash.keep
       redirect_to movies_path(sort: session[:sort],ratings:session[:ratings])
     end
